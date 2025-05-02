@@ -5,7 +5,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\HoldingController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\SnapshotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,4 +26,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/assets', [AssetController::class, 'index']);
+Route::post('/assets', [AssetController::class, 'store']);
+Route::post('/holdings', [HoldingController::class, 'store']);
+Route::post('/portfolios', [PortfolioController::class, 'store']);
+Route::get("/portfolios", [PortfolioController::class, 'index']);
+Route::get('/portfolios/{portfolio}', [PortfolioController::class, 'show']);
+Route::get('/portfolios/{portfolio}/snapshots', [SnapshotController::class, 'index']);
+Route::get('/snapshots/{snapshot}', [SnapshotController::class, 'show']);
 Route::get('/page/{slug?}', [PageController::class, 'show']);

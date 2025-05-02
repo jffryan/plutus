@@ -3,9 +3,7 @@ import { ref } from "vue";
 
 const headerLinks = [
   { name: "Home", path: "/" },
-  { name: "Spreadsheets", path: "/page/spreadsheets" },
-  { name: "Transactions", path: "/page/transactions" },
-  { name: "Reports", path: "/page/reports" },
+  { name: "Portfolios", path: "/portfolios" },
 ];
 </script>
 
