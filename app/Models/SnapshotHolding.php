@@ -14,7 +14,7 @@ class SnapshotHolding extends Model
         'asset_id',
         'quantity',
         'value',
-        'price_per_unit',
+        'cost_basis',
     ];
 
     public function snapshot()

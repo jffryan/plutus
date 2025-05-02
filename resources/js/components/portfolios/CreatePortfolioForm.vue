@@ -37,26 +37,3 @@ async function createPortfolio() {
   </BaseForm>
 </template>
 
-<style scoped>
-.input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  background-color: #2563eb;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-}
-
-.btn:hover {
-  background-color: #1d4ed8;
-}
-</style>
