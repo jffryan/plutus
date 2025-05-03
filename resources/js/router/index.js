@@ -24,6 +24,11 @@ const router = createRouter({
             component: () => import("@/components/portfolios/PortfolioDetail.vue"),
         },
         {
+            path: "/snapshots/:id",
+            name: "SnapshotDetail",
+            component: () => import("@/components/snapshots/SnapshotDetail.vue"),
+        },
+        {
             path: "/page/:slug",
             name: "IndexPage",
             component: () => import("@/views/IndexPage.vue"),

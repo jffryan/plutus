@@ -11,7 +11,7 @@ class SnapshotHoldingResource extends JsonResource
     {
         return [
             'quantity' => $this->quantity,
-            'price_per_unit' => $this->price_per_unit,
+            'cost_basis' => $this->cost_basis,
             'value' => $this->value,
             'asset' => new AssetResource($this->asset),
         ];
