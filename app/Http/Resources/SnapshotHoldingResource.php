@@ -10,9 +10,9 @@ class SnapshotHoldingResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'quantity' => $this->quantity,
-            'cost_basis' => $this->cost_basis,
-            'value' => $this->value,
+            'quantity' => (float) $this->quantity,
+            'value' => (float) $this->value,
+            'cost_basis' => (float) $this->cost_basis,
             'asset' => new AssetResource($this->asset),
         ];
     }

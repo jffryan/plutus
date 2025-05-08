@@ -15,6 +15,7 @@ class Holding extends Model
         'target_allocation',
         'cost_basis',
         'quantity',
+        'value',
         'is_paper_trade',
         'flag_close_this_year',
         'notes',

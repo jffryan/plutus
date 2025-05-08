@@ -3,9 +3,11 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import CreatePortfolioSnapshot from "@/components/portfolios/CreatePortfolioSnapshot.vue";
+import PortfolioHoldingsTable from "@/components/portfolios/PortfolioHoldingsTable.vue";
 
 const route = useRoute();
 const portfolio = ref(null);
+const snapshots = ref([]);
 
 async function fetchPortfolio() {
   try {
@@ -16,8 +18,20 @@ async function fetchPortfolio() {
   }
 }
 
+async function fetchSnapshots() {
+  try {
+    const response = await axios.get(`/api/portfolios/${route.params.id}/snapshots`);
+    snapshots.value = response.data.data.sort((a, b) => {
+      return new Date(b.snapshot_date) - new Date(a.snapshot_date);
+    });
+  } catch (err) {
+    console.error("Error loading portfolio snapshots:", err);
+  }
+}
+
 onMounted(() => {
   fetchPortfolio();
+  fetchSnapshots();
 });
 
 
@@ -33,34 +47,27 @@ onMounted(() => {
       </p>
 
       <h2 class="text-xl font-semibold mt-6">Holdings</h2>
-      <div v-if="portfolio.holdings.length" class="mt-3 space-y-2">
-        <div v-for="holding in portfolio.holdings" :key="holding.id" class="border p-4 rounded shadow-sm">
-          <div class="flex justify-between">
-            <div>
-              <p class="font-medium">
-                {{ holding.asset.label }}
-                <span class="text-xs text-gray-500">({{ holding.asset.ticker }})</span>
-              </p>
-              <p class="text-sm text-gray-600">
-                Quantity: {{ holding.quantity }}
-              </p>
-              <p class="text-sm text-gray-600">
-                Target:
-                {{
-                  (holding.target_allocation * 100).toFixed(
-                    1
-                  )
-                }}%
-              </p>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-green-600">
-                ${{ holding.current_value?.toFixed(2) }}
-              </p>
-            </div>
+      <div v-if="portfolio.holdings.length" class="mt-3">
+        <PortfolioHoldingsTable :holdings="portfolio.holdings" />
+        <router-link :to="{ name: 'PortfolioTransactionEditor', params: { id: portfolio.id } }" class="btn mt-4">
+          + Add / Edit Transactions
+        </router-link>
+      </div>
+      <h2 class="text-xl font-semibold mt-8">Snapshots</h2>
+      <div v-if="snapshots.length" class="mt-3 space-y-2">
+        <div v-for="snapshot in snapshots" :key="snapshot.id"
+          class="border p-3 rounded shadow-sm hover:bg-gray-50 flex justify-between items-center">
+          <div>
+            <p class="font-medium">{{ snapshot.snapshot_date }}</p>
+            <p class="text-sm text-gray-500 italic">{{ snapshot.notes || '—' }}</p>
           </div>
+          <router-link class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+            :to="{ name: 'SnapshotDetail', params: { id: snapshot.id } }">
+            View
+          </router-link>
         </div>
       </div>
+      <div v-else class="text-gray-500 mt-2">No snapshots yet.</div>
       <div v-else class="text-gray-500 mt-2">No holdings found.</div>
       <CreatePortfolioSnapshot :portfolio-id="portfolio.id" class="mt-12" />
     </div>

@@ -4,6 +4,7 @@ import { ref } from "vue";
 const headerLinks = [
   { name: "Home", path: "/" },
   { name: "Portfolios", path: "/portfolios" },
+  { name: "Expense Trackers", path: "/expense-trackers" },
 ];
 </script>
 

@@ -8,7 +8,7 @@ class HoldingResource extends JsonResource
 {
     public function toArray($request)
     {
-        $value = $this->quantity * optional($this->asset->latestPrice)->price;
+        $value = $this->value;
 
         return [
             'id' => $this->id,
@@ -18,7 +18,7 @@ class HoldingResource extends JsonResource
             'is_paper_trade' => $this->is_paper_trade,
             'flag_close_this_year' => $this->flag_close_this_year,
             'notes' => $this->notes,
-            'current_value' => $value,
+            'value' => $value,
             'asset' => new AssetResource($this->asset),
         ];
     }

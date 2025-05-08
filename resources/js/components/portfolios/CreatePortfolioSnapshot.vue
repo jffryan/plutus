@@ -83,7 +83,7 @@ async function submitManualSnapshot() {
             <option v-for="asset in assets" :key="asset.id" :value="asset.id">
               {{
                 asset.ticker
-                  ? `${asset.ticker} – ${asset.label}`
+                  ? `${asset.ticker} - ${asset.label}`
                   : asset.label
               }}
               ({{ asset.type }})

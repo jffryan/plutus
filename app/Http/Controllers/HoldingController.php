@@ -15,6 +15,7 @@ class HoldingController extends Controller
             'target_allocation' => 'required|numeric|min:0|max:1',
             'cost_basis' => 'required|numeric|min:0',
             'quantity' => 'required|numeric|min:0',
+            'value' => 'nullable|numeric|min:0',
             'is_paper_trade' => 'boolean',
             'flag_close_this_year' => 'boolean',
             'notes' => 'nullable|string',

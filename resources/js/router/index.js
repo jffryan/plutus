@@ -16,23 +16,34 @@ const router = createRouter({
         {
             path: "/portfolios",
             name: "Portfolios",
-            component: () => import("@/components/portfolios/PortfolioList.vue"),
+            component: () =>
+                import("@/components/portfolios/PortfolioList.vue"),
         },
         {
             path: "/portfolios/:id",
             name: "PortfolioDetail",
-            component: () => import("@/components/portfolios/PortfolioDetail.vue"),
+            component: () =>
+                import("@/components/portfolios/PortfolioDetail.vue"),
+        },
+        {
+            path: "/portfolios/:id/transactions",
+            name: "PortfolioTransactionEditor",
+            component: () =>
+                import(
+                    "@/components/portfolios/PortfolioTransactionEditor.vue"
+                ),
         },
         {
             path: "/snapshots/:id",
             name: "SnapshotDetail",
-            component: () => import("@/components/snapshots/SnapshotDetail.vue"),
+            component: () =>
+                import("@/components/snapshots/SnapshotDetail.vue"),
         },
         {
             path: "/page/:slug",
             name: "IndexPage",
             component: () => import("@/views/IndexPage.vue"),
-        }
+        },
     ],
 });
 
