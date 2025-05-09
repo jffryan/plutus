@@ -10,6 +10,7 @@ use App\Http\Controllers\HoldingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SnapshotController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,5 +35,6 @@ Route::get("/portfolios", [PortfolioController::class, 'index']);
 Route::get('/portfolios/{portfolio}', [PortfolioController::class, 'show']);
 Route::get('/portfolios/{portfolio}/snapshots', [SnapshotController::class, 'index']);
 Route::post('/portfolios/{portfolio}/snapshots', [SnapshotController::class, 'store']);
+Route::post('/portfolios/{portfolio}/transactions/batch', [TransactionController::class, 'storeBatch']);
 Route::get('/snapshots/{snapshot}', [SnapshotController::class, 'show']);
 Route::get('/page/{slug?}', [PageController::class, 'show']);

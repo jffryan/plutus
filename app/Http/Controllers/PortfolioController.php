@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Portfolio;
 use App\Http\Resources\PortfolioResource;
+use App\Models\Portfolio;
+use Illuminate\Http\Request;
 
 class PortfolioController extends Controller
 {
@@ -12,17 +12,17 @@ class PortfolioController extends Controller
     public function index()
     {
         $portfolios = Portfolio::with('holdings.asset')->get();
-    
+
         return PortfolioResource::collection($portfolios);
     }
 
     public function show(Portfolio $portfolio)
     {
         $portfolio->load('holdings.asset.tags');
-    
+
         if ($portfolio->holdings->isEmpty()) {
             $latestSnapshot = $portfolio->snapshots()->latest('snapshot_date')->with('snapshotHoldings')->first();
-    
+
             if ($latestSnapshot) {
                 foreach ($latestSnapshot->snapshotHoldings as $s) {
                     $portfolio->holdings()->create([
@@ -36,15 +36,15 @@ class PortfolioController extends Controller
                         'notes' => null,
                     ]);
                 }
-    
+
                 // Reload after creation
                 $portfolio->load('holdings.asset.tags');
             }
         }
-    
+
         return new PortfolioResource($portfolio);
     }
-    
+
 
     public function store(Request $request)
     {

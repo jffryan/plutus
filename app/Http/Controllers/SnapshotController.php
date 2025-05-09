@@ -55,8 +55,29 @@ class SnapshotController extends Controller
                 ]);
             }
 
+            // Load the snapshot holdings
+            $snapshot->load('snapshotHoldings');
+
+            // Now replace the portfolio holdings (sync)
+            $portfolio->holdings()->delete();
+
+            foreach ($snapshot->snapshotHoldings as $h) {
+                if ($h->quantity > 0) {
+                    $portfolio->holdings()->create([
+                        'asset_id' => $h->asset_id,
+                        'quantity' => $h->quantity,
+                        'value' => $h->value,
+                        'cost_basis' => $h->cost_basis,
+                        'target_allocation' => 0,
+                        'is_paper_trade' => false,
+                        'flag_close_this_year' => false,
+                        'notes' => null,
+                    ]);
+                }
+            }
+
             return response()->json([
-                'message' => 'Snapshot created successfully.',
+                'message' => 'Snapshot created and portfolio holdings synced.',
                 'snapshot_id' => $snapshot->id,
             ], 201);
         });

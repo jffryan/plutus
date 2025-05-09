@@ -13,6 +13,7 @@ const router = useRouter();
 const portfolio = ref(null);
 const localHoldings = ref([]);
 const manualEdits = ref({});
+const pendingTransactions = ref([]);
 
 const usdHolding = computed(() =>
     localHoldings.value.find((h) => h.asset.ticker === "USD")
@@ -32,6 +33,15 @@ function handleBuy({ assetId, quantity, price }) {
     asset.quantity = parseFloat(asset.quantity) + quantity;
     asset.cost_basis = parseFloat(asset.cost_basis) + totalCost;
     asset.value = parseFloat(asset.value) + totalCost;
+
+    pendingTransactions.value.push({
+        asset_id: assetId,
+        type: "buy",
+        quantity,
+        price,
+        date: new Date().toISOString().slice(0, 10),
+        notes: null,
+    });
 }
 
 function handleSell({ assetId, quantity, price }) {
@@ -56,20 +66,42 @@ function handleSell({ assetId, quantity, price }) {
         asset.cost_basis = 0;
         asset.value = 0;
     }
+
+    pendingTransactions.value.push({
+        asset_id: assetId,
+        type: "sell",
+        quantity,
+        price,
+        date: new Date().toISOString().slice(0, 10),
+        notes: null,
+    });
 }
 
 function handleManualEdit({ assetId, field, value }) {
-  const asset = localHoldings.value.find(h => h.asset.id === assetId)
-  if (!asset) return
+    const asset = localHoldings.value.find((h) => h.asset.id === assetId);
+    if (!asset) return;
 
-  asset[field] = value
+    asset[field] = value;
 
-  if (!manualEdits.value[assetId]) {
-    manualEdits.value[assetId] = {}
-  }
-  manualEdits.value[assetId][field] = true
+    if (!manualEdits.value[assetId]) {
+        manualEdits.value[assetId] = {};
+    }
+    manualEdits.value[assetId][field] = true;
 }
 
+const transactionPreview = computed(() => {
+    return pendingTransactions.value.map((tx) => {
+        const asset =
+            localHoldings.value.find((h) => h.asset.id === tx.asset_id)
+                ?.asset || {};
+        return {
+            ...tx,
+            assetLabel: asset.label || "Unknown",
+            assetTicker: asset.ticker || "",
+            total: tx.quantity * tx.price,
+        };
+    });
+});
 
 async function saveSnapshot() {
     try {
@@ -88,6 +120,16 @@ async function saveSnapshot() {
             `/api/portfolios/${route.params.id}/snapshots`,
             payload
         );
+
+        if (pendingTransactions.value.length > 0) {
+            await axios.post(
+                `/api/portfolios/${route.params.id}/transactions/batch`,
+                {
+                    transactions: pendingTransactions.value,
+                }
+            );
+        }
+
         alert("Snapshot created successfully.");
         router.push({
             name: "SnapshotDetail",
@@ -124,6 +166,45 @@ onMounted(fetchPortfolio);
             </p>
 
             <PortfolioHoldingsTable :holdings="localHoldings" />
+
+            <div v-if="transactionPreview.length" class="mt-10 border-t pt-6">
+                <h2 class="text-lg font-semibold mb-2">Pending Transactions</h2>
+                <table class="w-full text-sm border border-gray-300 mt-2">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-2 text-left">Asset</th>
+                            <th class="p-2 text-left">Type</th>
+                            <th class="p-2 text-right">Quantity</th>
+                            <th class="p-2 text-right">Price</th>
+                            <th class="p-2 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(tx, i) in transactionPreview"
+                            :key="i"
+                            class="border-t border-gray-200"
+                        >
+                            <td class="p-2">
+                                {{ tx.assetLabel }}
+                                <span class="text-xs text-gray-500 ml-1"
+                                    >({{ tx.assetTicker }})</span
+                                >
+                            </td>
+                            <td class="p-2 capitalize">{{ tx.type }}</td>
+                            <td class="p-2 text-right">
+                                {{ tx.quantity.toFixed(2) }}
+                            </td>
+                            <td class="p-2 text-right">
+                                ${{ tx.price.toFixed(2) }}
+                            </td>
+                            <td class="p-2 text-right font-semibold">
+                                ${{ tx.total.toFixed(2) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <div class="mt-12">
                 <button
