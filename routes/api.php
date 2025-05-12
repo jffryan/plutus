@@ -12,6 +12,7 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SnapshotController;
 use App\Http\Controllers\TransactionController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// PORTFOLIO API
 Route::get('/assets', [AssetController::class, 'index']);
 Route::post('/assets', [AssetController::class, 'store']);
 Route::post('/holdings', [HoldingController::class, 'store']);

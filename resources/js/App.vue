@@ -3,12 +3,20 @@
     <RouterView />
 </template>
 <script>
+import { onMounted } from "vue";
 import { RouterView } from "vue-router";
+import { useAuthStore } from "./stores";
 import GlobalHeader from "./components/header/GlobalHeader.vue";
 
 export default {
     name: "App",
-    setup() {},
+    setup() {
+        const AuthStore = useAuthStore();
+        onMounted(() => AuthStore.fetchUser());
+        return {
+            AuthStore,
+        };
+    },
     components: {
         GlobalHeader,
         RouterView,

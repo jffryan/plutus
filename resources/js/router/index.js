@@ -34,6 +34,16 @@ const router = createRouter({
                 ),
         },
         {
+            path: "/login",
+            name: "UserLogin",
+            component: () => import("@/components/users/UserLogin.vue"),
+        },
+        {
+            path: "/register",
+            name: "UserRegister",
+            component: () => import("@/components/users/UserRegister.vue"),
+        },
+        {
             path: "/snapshots/:id",
             name: "SnapshotDetail",
             component: () =>
