@@ -1,9 +1,12 @@
 <script setup>
 import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores";
 import axios from "axios";
 import BaseForm from "@/components/ui/forms/BaseForm.vue";
 
+const route = useRoute();
+const router = useRouter();
 const AuthStore = useAuthStore();
 
 const form = ref({
@@ -19,6 +22,8 @@ const login = async () => {
         await axios.get("/sanctum/csrf-cookie"); // ensures CSRF cookie is set
         await axios.post("/login", form.value);
         await AuthStore.fetchUser();
+        const redirectTo = route.query.redirect || "/dashboard";
+        router.push(redirectTo);
     } catch (err) {
         error.value = err.response?.data?.message || "Login failed";
     }

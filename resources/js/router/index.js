@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "@/stores";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,21 +10,35 @@ const router = createRouter({
             component: () => import("@/views/Home.vue"),
         },
         {
+            path: "/page/:slug",
+            name: "IndexPage",
+            component: () => import("@/views/IndexPage.vue"),
+        },
+        {
             path: "/assets",
             name: "Assets",
             component: () => import("@/components/fin-assets/AssetList.vue"),
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/dashboard",
+            name: "UserDashboard",
+            component: () => import("@/components/users/UserDashboard.vue"),
+            meta: { requiresAuth: true },
         },
         {
             path: "/portfolios",
             name: "Portfolios",
             component: () =>
                 import("@/components/portfolios/PortfolioList.vue"),
+            meta: { requiresAuth: true },
         },
         {
             path: "/portfolios/:id",
             name: "PortfolioDetail",
             component: () =>
                 import("@/components/portfolios/PortfolioDetail.vue"),
+            meta: { requiresAuth: true },
         },
         {
             path: "/portfolios/:id/transactions",
@@ -32,6 +47,14 @@ const router = createRouter({
                 import(
                     "@/components/portfolios/PortfolioTransactionEditor.vue"
                 ),
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/snapshots/:id",
+            name: "SnapshotDetail",
+            component: () =>
+                import("@/components/snapshots/SnapshotDetail.vue"),
+            meta: { requiresAuth: true },
         },
         {
             path: "/login",
@@ -43,18 +66,28 @@ const router = createRouter({
             name: "UserRegister",
             component: () => import("@/components/users/UserRegister.vue"),
         },
-        {
-            path: "/snapshots/:id",
-            name: "SnapshotDetail",
-            component: () =>
-                import("@/components/snapshots/SnapshotDetail.vue"),
-        },
-        {
-            path: "/page/:slug",
-            name: "IndexPage",
-            component: () => import("@/views/IndexPage.vue"),
-        },
     ],
+});
+
+router.beforeEach(async (to, from, next) => {
+    const AuthStore = useAuthStore();
+
+    // Load the user if not already loaded (initial page load)
+    if (!AuthStore.user && to.meta.requiresAuth) {
+        try {
+            await AuthStore.fetchUser();
+        } catch {
+            // If fetch fails, fallback to null
+            AuthStore.user = null;
+        }
+    }
+
+    // Redirect unauthenticated users from protected routes
+    if (to.meta.requiresAuth && !AuthStore.isLoggedIn) {
+        next({ name: "UserLogin", query: { redirect: to.fullPath } });
+    } else {
+        next();
+    }
 });
 
 export default router;
