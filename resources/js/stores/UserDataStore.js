@@ -4,6 +4,7 @@ import axios from "axios";
 export const useUserDataStore = defineStore("UserDataStore", {
     state: () => ({
         budgets: [],
+        portfolios: [],
     }),
     actions: {
         async fetchBudgets() {
@@ -13,6 +14,15 @@ export const useUserDataStore = defineStore("UserDataStore", {
             } catch (error) {
                 this.budgets = [];
                 console.error("Failed to fetch budgets", error);
+            }
+        },
+        async fetchPortfolios() {
+            try {
+                const res = await axios.get("/api/portfolios");
+                this.portfolios = res.data.data;
+            } catch (error) {
+                this.portfolios = [];
+                console.error("Failed to fetch portfolios", error);
             }
         },
         clearData() {

@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\HoldingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SnapshotController;
 use App\Http\Controllers\TransactionController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +31,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // PORTFOLIO API
 Route::get('/assets', [AssetController::class, 'index']);
 Route::post('/assets', [AssetController::class, 'store']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/budgets', [BudgetController::class, 'store']);
+    Route::post('/budgets/{budget}/envelopes', [BudgetController::class, 'storeEnvelopes']);
+    Route::patch('/budgets/{budget}/activate', [BudgetController::class, 'activate']);
+});
 Route::post('/holdings', [HoldingController::class, 'store']);
 Route::post('/portfolios', [PortfolioController::class, 'store']);
 Route::get("/portfolios", [PortfolioController::class, 'index']);

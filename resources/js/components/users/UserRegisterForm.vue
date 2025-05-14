@@ -15,7 +15,6 @@ const onSubmit = async () => {
         error.value = null;
         try {
             const response = await axios.post("/api/register", form.value);
-            console.log("Registration successful:", response.data);
         } catch (err) {
             if (err.response && err.response.status === 422) {
                 error.value = "Validation error. Please check your input.";

@@ -21,6 +21,18 @@ const router = createRouter({
             meta: { requiresAuth: true },
         },
         {
+            path: "/budgets",
+            name: "budgets.index",
+            component: () => import("@/components/budgets/BudgetList.vue"),
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/budgets/create",
+            name: "budgets.create",
+            component: () => import("@/components/budgets/BudgetCreate.vue"),
+            meta: { requiresAuth: true },
+        },
+        {
             path: "/dashboard",
             name: "UserDashboard",
             component: () => import("@/components/users/UserDashboard.vue"),
@@ -28,9 +40,16 @@ const router = createRouter({
         },
         {
             path: "/portfolios",
-            name: "Portfolios",
+            name: "portfolios.index",
             component: () =>
                 import("@/components/portfolios/PortfolioList.vue"),
+            meta: { requiresAuth: true },
+        },
+        {
+            path: "/portfolios/create",
+            name: "portfolios.create",
+            component: () =>
+                import("@/components/portfolios/PortfolioCreate.vue"),
             meta: { requiresAuth: true },
         },
         {

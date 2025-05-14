@@ -1,8 +1,8 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore, useUserDataStore } from "@/stores";
-import UserDropdown from "@/components/header/UserDropdown.vue";
+import MenuDropdown from "@/components/header/MenuDropdown.vue";
 
 const router = useRouter();
 const AuthStore = useAuthStore();
@@ -11,15 +11,7 @@ const UserDataStore = useUserDataStore();
 const generalLinks = [];
 // const generalLinks = [{ name: "Home", path: "/" }];
 
-const authorizedLinks = [
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Portfolios", path: "/portfolios" },
-    { name: "Budgets", path: "/budgets" },
-];
-
-const filteredAuthorizedLinks = computed(() =>
-    authorizedLinks.filter((link) => link.name !== "Budgets")
-);
+const authorizedLinks = [{ name: "Dashboard", path: "/dashboard" }];
 
 const guestLinks = [{ name: "Register", path: "/register" }];
 
@@ -35,10 +27,35 @@ const handleLogout = async () => {
     }
 };
 
-onMounted(async () => {
-    if (isLoggedIn.value) {
-        await UserDataStore.fetchBudgets();
+watch(
+    isLoggedIn,
+    (value) => {
+        if (value) {
+            UserDataStore.fetchPortfolios();
+            // UserDataStore.fetchBudgets();
+        }
+    },
+    { immediate: true }
+);
+
+const budgetItems = computed(() => {
+    if (!UserDataStore.budgets.length) {
+        return [];
     }
+    return UserDataStore.budgets.map((b) => ({
+        name: b.name || `Budget ${b.id}`,
+        path: `/budgets/${b.id}`,
+    }));
+});
+
+const portfolioItems = computed(() => {
+    if (!UserDataStore.portfolios.length) {
+        return [];
+    }
+    return UserDataStore.portfolios.map((p) => ({
+        name: p.name || `Portfolio ${p.id}`,
+        path: `/portfolios/${p.id}`,
+    }));
 });
 </script>
 
@@ -68,7 +85,7 @@ onMounted(async () => {
 
                     <template v-if="isLoggedIn">
                         <li
-                            v-for="(link, index) in filteredAuthorizedLinks"
+                            v-for="(link, index) in authorizedLinks"
                             :key="'a-' + index"
                         >
                             <router-link
@@ -78,7 +95,22 @@ onMounted(async () => {
                                 {{ link.name }}
                             </router-link>
                         </li>
-                        <UserDropdown />
+                        <MenuDropdown
+                            label="Portfolios"
+                            :items="portfolioItems"
+                            :create-item="{
+                                name: 'Create Portfolio',
+                                path: '/portfolios/create',
+                            }"
+                        />
+                        <MenuDropdown
+                            label="Budgets"
+                            :items="budgetItems"
+                            :create-item="{
+                                name: 'Create Budget',
+                                path: '/budgets/create',
+                            }"
+                        />
                     </template>
 
                     <template v-else>
