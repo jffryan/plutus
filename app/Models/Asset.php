@@ -15,6 +15,11 @@ class Asset extends Model
         'type',
     ];
 
+    public function dividends()
+    {
+        return $this->hasMany(Dividend::class);
+    }
+
     public function holdings()
     {
         return $this->hasMany(Holding::class);

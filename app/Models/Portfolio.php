@@ -15,6 +15,12 @@ class Portfolio extends Model
         'notes',
     ];
 
+
+    public function dividends()
+    {
+        return $this->hasMany(Dividend::class);
+    }
+
     public function holdings()
     {
         return $this->hasMany(Holding::class);

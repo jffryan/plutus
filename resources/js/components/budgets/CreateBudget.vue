@@ -1,6 +1,6 @@
 <script setup>
 import NarrowColumnLayout from "@/components/layouts/NarrowColumnLayout.vue";
-// import CreateBudgetForm from "@/components/budgets/CreateBudgetForm.vue";
+import CreateBudgetForm from "@/components/budgets/CreateBudgetForm.vue";
 </script>
 
 <template>
@@ -15,6 +15,6 @@ import NarrowColumnLayout from "@/components/layouts/NarrowColumnLayout.vue";
                 Back to Budgets
             </router-link>
         </p>
-        <!-- <CreateBudgetForm /> -->
+        <CreateBudgetForm />
     </narrow-column-layout>
 </template>

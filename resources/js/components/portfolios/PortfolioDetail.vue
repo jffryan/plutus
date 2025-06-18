@@ -24,9 +24,7 @@ async function fetchSnapshots() {
         const response = await axios.get(
             `/api/portfolios/${route.params.id}/snapshots`
         );
-        snapshots.value = response.data.data.sort((a, b) => {
-            return new Date(b.snapshot_date) - new Date(a.snapshot_date);
-        });
+        snapshots.value = response.data.data;
     } catch (err) {
         console.error("Error loading portfolio snapshots:", err);
     }

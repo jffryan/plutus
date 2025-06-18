@@ -29,7 +29,7 @@ const router = createRouter({
         {
             path: "/budgets/create",
             name: "budgets.create",
-            component: () => import("@/components/budgets/BudgetCreate.vue"),
+            component: () => import("@/components/budgets/CreateBudget.vue"),
             meta: { requiresAuth: true },
         },
         {

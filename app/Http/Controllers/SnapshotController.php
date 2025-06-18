@@ -15,7 +15,10 @@ class SnapshotController extends Controller
 {
     public function index(Portfolio $portfolio)
     {
-        $snapshots = $portfolio->snapshots()->withCount('snapshotHoldings')->get();
+        $snapshots = $portfolio->snapshots()
+            ->withCount('snapshotHoldings')
+            ->orderByDesc('snapshot_date')
+            ->get();
 
         return SnapshotIndexResource::collection($snapshots);
     }
